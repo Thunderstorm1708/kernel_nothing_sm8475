@@ -1,4 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
+
+# Build only the vendor (sm8475-devicetrees) dtbs when they are present
+vendor := $(src)/vendor
+ifneq "$(wildcard $(vendor)/Makefile)" ""
+subdir-y += vendor
+else
 subdir-y += actions
 subdir-y += airoha
 subdir-y += allwinner
@@ -34,3 +40,4 @@ subdir-y += tesla
 subdir-y += ti
 subdir-y += toshiba
 subdir-y += xilinx
+endif
