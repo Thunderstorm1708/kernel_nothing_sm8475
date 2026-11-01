@@ -1184,6 +1184,11 @@ ifeq ($(KBUILD_EXTMOD),)
 endif
 	$(Q)$(MAKE) $(hdr-inst)=$(hdr-prefix)include/uapi
 	$(Q)$(MAKE) $(hdr-inst)=$(hdr-prefix)arch/$(SRCARCH)/include/uapi
+ifeq ($(KBUILD_EXTMOD),)
+ifneq ($(KCONFIG_EXT_PREFIX),)
+	$(Q)$(MAKE) -f $(srctree)/android/vendor_headers.mk
+endif
+endif
 
 ifeq ($(KBUILD_EXTMOD),)
 
