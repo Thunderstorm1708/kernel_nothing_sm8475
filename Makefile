@@ -1178,6 +1178,12 @@ PHONY += headers_install
 headers_install: headers
 	$(call cmd,headers_install)
 
+# The vendor uapi headers come from the modules repository next to this tree.
+# The kernel build passes KCONFIG_EXT_PREFIX; the headers_install of
+# LineageOS' generated_kernel_includes does not, so find it next to the kernel.
+VENDOR_HEADERS_EXT_PREFIX := $(or $(KCONFIG_EXT_PREFIX),$(if $(wildcard \
+	$(srctree)/../sm8475-modules/soc-repo/Kconfig.ext),../sm8475-modules/soc-repo/))
+
 headers:
 ifeq ($(KBUILD_EXTMOD),)
 	$(if $(filter um, $(SRCARCH)), $(error Headers not exportable for UML))
@@ -1185,8 +1191,8 @@ endif
 	$(Q)$(MAKE) $(hdr-inst)=$(hdr-prefix)include/uapi
 	$(Q)$(MAKE) $(hdr-inst)=$(hdr-prefix)arch/$(SRCARCH)/include/uapi
 ifeq ($(KBUILD_EXTMOD),)
-ifneq ($(KCONFIG_EXT_PREFIX),)
-	$(Q)$(MAKE) -f $(srctree)/android/vendor_headers.mk
+ifneq ($(VENDOR_HEADERS_EXT_PREFIX),)
+	$(Q)$(MAKE) -f $(srctree)/android/vendor_headers.mk KCONFIG_EXT_PREFIX=$(VENDOR_HEADERS_EXT_PREFIX)
 endif
 endif
 
